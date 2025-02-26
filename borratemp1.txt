@@ -1,0 +1,47 @@
+@echo off
+Rem borratemp.bat
+Rem Autor: Marc Liang Perarnau 
+Rem Fecha: FECHA
+Cls
+
+:: Permite el uso de variables retrasadas
+setlocal enabledelayedexpansion
+
+:: Definimos rutas
+set "ORIGIN=D:\Tabby"
+set "DESTINI=C:\Users\Alumno\Desktop\bk"
+set "LOGDIR=C:\Users\Alumno\Desktop\bk\LOGS"
+
+:: Si la carpeta destino no existe, se crea
+if not exist "%DESTINI%" mkdir "%DESTINI%"
+
+:: Si la carpeta de logs no existe, se crea
+if not exist "%LOGDIR%" mkdir "%LOGDIR%"
+
+:: Obtiene la fecha en formato YYYYMMDDHHMMSS
+for /f "tokens=2 delims==." %%I in ('wmic os get localdatetime /value') do set FECHA=%%I
+
+:: Formato de fecha para el log
+set "FECHA_LOG=%FECHA:~0,4%-%FECHA:~4,2%-%FECHA:~6,2%_%FECHA:~8,2%-%FECHA:~10,2%"
+
+:: Archivo de log
+set "LOGFILE=%LOGDIR%\%FECHA_LOG%.log"
+
+:: Guarda la fecha y hora de inicio en el log
+(echo Inicio: %DATE% %TIME%) > "%LOGFILE%"
+
+:: Copia archivos usando robocopy
+robocopy "%ORIGIN%" "%DESTINI%" /E /XO /LOG+:"%LOGFILE%" /NP /TEE
+
+:: Comprobación del código de error de robocopy
+if %ERRORLEVEL% LSS 8 (
+    echo Copia exitosa. >> "%LOGFILE%"
+) else (
+    echo Copia fallida. >> "%LOGFILE%"
+)
+
+:: Guarda la fecha y hora de finalización
+echo Fin: %DATE% %TIME% >> "%LOGFILE%"
+
+exit /b
+
