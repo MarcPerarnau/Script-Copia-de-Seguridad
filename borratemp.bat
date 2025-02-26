@@ -1,5 +1,5 @@
 @echo off
-Rem borratemp1.bat
+Rem borratemp.bat
 Rem Autor: Marc Liang Perarnau 
 Rem Fecha: DATE
 Cls
